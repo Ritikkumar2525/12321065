@@ -1,6 +1,11 @@
-console.log("Logging middleware started...");import { Log } from "./logger/logger.js";
+import { connectMongo, closeMongo } from "./config/mongo.js";
+import { Log } from "./logger/logger.js";
 
 const startApp = async () => {
+  console.log("Logging middleware started...");
+
+  await connectMongo();
+
   console.log("Application started...");
 
   await Log(
@@ -11,4 +16,8 @@ const startApp = async () => {
   );
 };
 
-startApp();
+startApp().catch(async (error) => {
+  console.error("Application startup failed:", error);
+  await closeMongo();
+  process.exit(1);
+});

@@ -11,5 +11,8 @@ export const env = {
   ACCESS_CODE: process.env.ACCESS_CODE || "",
 
   CLIENT_ID: process.env.CLIENT_ID || "",
-  CLIENT_SECRET: process.env.CLIENT_SECRET || ""
+  CLIENT_SECRET: process.env.CLIENT_SECRET || "",
+
+  MONGO_URI: process.env.MONGO_URI || "mongodb://localhost:27017/",
+  MONGO_DB_NAME: process.env.MONGO_DB_NAME || "notification_platform"
 };
