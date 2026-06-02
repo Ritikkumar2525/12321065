@@ -1,4 +1,4 @@
-export const formatDateTime = (value: string) => {
+export const formatDateTime = (value) => {
   const timestamp = Date.parse(value);
 
   if (Number.isNaN(timestamp)) {
@@ -11,7 +11,7 @@ export const formatDateTime = (value: string) => {
   }).format(timestamp);
 };
 
-export const formatRelativeTime = (value: string) => {
+export const formatRelativeTime = (value) => {
   const timestamp = Date.parse(value);
 
   if (Number.isNaN(timestamp)) {

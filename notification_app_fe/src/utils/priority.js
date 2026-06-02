@@ -1,28 +1,26 @@
-import type { NotificationItem } from "../types";
-
-const notificationTypeWeight: Record<NotificationItem["type"], number> = {
+const notificationTypeWeight = {
   Placement: 3,
   Result: 2,
   Event: 1
 };
 
-export const getNotificationTypeWeight = (notification: NotificationItem) =>
+export const getNotificationTypeWeight = (notification) =>
   notificationTypeWeight[notification.type] ?? 1;
 
-export const getNotificationTimestamp = (notification: NotificationItem) => {
+export const getNotificationTimestamp = (notification) => {
   const timestamp = Date.parse(notification.timestamp);
 
   return Number.isNaN(timestamp) ? 0 : timestamp;
 };
 
-export const getPriorityScore = (notification: NotificationItem) =>
+export const getPriorityScore = (notification) =>
   getNotificationTypeWeight(notification) * 1_000_000_000_000 +
   getNotificationTimestamp(notification);
 
 export const getTopPriorityNotifications = (
-  notifications: NotificationItem[],
-  viewedIds: Set<string>,
-  limit: number
+  notifications,
+  viewedIds,
+  limit
 ) =>
   notifications
     .filter((notification) => !viewedIds.has(notification.id))

@@ -11,28 +11,18 @@ import {
   Typography,
   useMediaQuery
 } from "@mui/material";
-import type { Theme } from "@mui/material/styles";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import MarkunreadMailboxIcon from "@mui/icons-material/MarkunreadMailbox";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
-import type { NotificationItem } from "../types";
-import { formatDateTime, formatRelativeTime } from "../utils/formatters";
-import { getNotificationTypeWeight } from "../utils/priority";
-
-type NotificationListProps = {
-  notifications: NotificationItem[];
-  viewedIds: Set<string>;
-  showPriority?: boolean;
-  emptyLabel: string;
-  onViewedChange: (id: string, nextViewed: boolean) => void;
-};
+import { formatDateTime, formatRelativeTime } from "../utils/formatters.js";
+import { getNotificationTypeWeight } from "../utils/priority.js";
 
 const typeColor = {
   Event: "info",
   Result: "success",
   Placement: "warning"
-} as const;
+};
 
 export const NotificationList = ({
   notifications,
@@ -40,8 +30,8 @@ export const NotificationList = ({
   showPriority = false,
   emptyLabel,
   onViewedChange
-}: NotificationListProps) => {
-  const isCompact = useMediaQuery((theme: Theme) =>
+}) => {
+  const isCompact = useMediaQuery((theme) =>
     theme.breakpoints.down("sm")
   );
 

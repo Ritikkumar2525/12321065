@@ -22,26 +22,19 @@ import {
   Typography,
   useMediaQuery
 } from "@mui/material";
-import type { SelectChangeEvent, Theme } from "@mui/material";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import InboxIcon from "@mui/icons-material/Inbox";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import type {
-  AppView,
-  NotificationFilters,
-  NotificationItem,
-  NotificationType
-} from "./types";
-import { NotificationList } from "./components/NotificationList";
-import { fetchNotifications } from "./services/notifications";
-import { Log } from "./services/logger";
-import { getTopPriorityNotifications } from "./utils/priority";
-import { loadViewedIds, saveViewedIds } from "./utils/viewedStore";
+import { NotificationList } from "./components/NotificationList.jsx";
+import { fetchNotifications } from "./services/notifications.js";
+import { Log } from "./services/logger.js";
+import { getTopPriorityNotifications } from "./utils/priority.js";
+import { loadViewedIds, saveViewedIds } from "./utils/viewedStore.js";
 
-const notificationTypes: Array<NotificationType | "All"> = [
+const notificationTypes = [
   "All",
   "Event",
   "Result",
@@ -50,24 +43,24 @@ const notificationTypes: Array<NotificationType | "All"> = [
 
 const limitOptions = [5, 10];
 
-const getViewFromHash = (): AppView =>
+const getViewFromHash = () =>
   window.location.hash.replace("#", "") === "priority" ? "priority" : "inbox";
 
 const App = () => {
-  const isCompact = useMediaQuery((theme: Theme) =>
+  const isCompact = useMediaQuery((theme) =>
     theme.breakpoints.down("md")
   );
-  const [view, setView] = useState<AppView>(getViewFromHash);
-  const [filters, setFilters] = useState<NotificationFilters>({
+  const [view, setView] = useState(getViewFromHash);
+  const [filters, setFilters] = useState({
     limit: 10,
     page: 1,
     notificationType: "All"
   });
   const [priorityLimit, setPriorityLimit] = useState(10);
-  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
-  const [viewedIds, setViewedIds] = useState<Set<string>>(loadViewedIds);
+  const [notifications, setNotifications] = useState([]);
+  const [viewedIds, setViewedIds] = useState(loadViewedIds);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
 
   const unreadCount = notifications.filter(
     (notification) => !viewedIds.has(notification.id)
@@ -117,7 +110,7 @@ const App = () => {
     saveViewedIds(viewedIds);
   }, [viewedIds]);
 
-  const handleViewChange = (_event: React.SyntheticEvent, nextView: AppView) => {
+  const handleViewChange = (_event, nextView) => {
     setView(nextView);
     if (window.location.hash !== `#${nextView}`) {
       window.location.hash = nextView;
@@ -125,19 +118,19 @@ const App = () => {
     void Log("info", "state", `Switched view to ${nextView}`);
   };
 
-  const handleTypeChange = (event: SelectChangeEvent) => {
-    const notificationType = event.target.value as NotificationType | "All";
+  const handleTypeChange = (event) => {
+    const notificationType = event.target.value;
     setFilters((current) => ({ ...current, notificationType, page: 1 }));
     void Log("info", "state", `Changed notification type to ${notificationType}`);
   };
 
-  const handleLimitChange = (event: SelectChangeEvent) => {
+  const handleLimitChange = (event) => {
     const limit = Number(event.target.value);
     setFilters((current) => ({ ...current, limit, page: 1 }));
     void Log("info", "state", `Changed page limit to ${limit}`);
   };
 
-  const handleViewedChange = (id: string, nextViewed: boolean) => {
+  const handleViewedChange = (id, nextViewed) => {
     setViewedIds((current) => {
       const next = new Set(current);
 
@@ -156,7 +149,7 @@ const App = () => {
     );
   };
 
-  const handlePageChange = (direction: "previous" | "next") => {
+  const handlePageChange = (direction) => {
     setFilters((current) => ({
       ...current,
       page:
@@ -167,7 +160,7 @@ const App = () => {
     void Log("info", "state", `Moved to ${direction} page`);
   };
 
-  const handlePriorityLimitChange = (_event: Event, nextValue: number | number[]) => {
+  const handlePriorityLimitChange = (_event, nextValue) => {
     const nextLimit = Array.isArray(nextValue) ? nextValue[0] : nextValue;
     setPriorityLimit(nextLimit);
     void Log("debug", "state", `Priority limit changed to ${nextLimit}`);

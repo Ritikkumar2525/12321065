@@ -1,48 +1,18 @@
-import type {
-  NotificationFilters,
-  NotificationItem,
-  NotificationResponse,
-  NotificationType
-} from "../types";
-import { Log } from "./logger";
-
-type RawNotification = {
-  ID?: string;
-  Id?: string;
-  id?: string;
-  Type?: string;
-  type?: string;
-  notificationType?: string;
-  notification_type?: string;
-  Message?: string;
-  message?: string;
-  Timestamp?: string;
-  timestamp?: string;
-  createdAt?: string;
-};
-
-type RawNotificationResponse =
-  | {
-      notifications?: RawNotification[];
-      total?: number;
-      page?: number;
-      limit?: number;
-    }
-  | RawNotification[];
+import { Log } from "./logger.js";
 
 const supportedNotificationTypes = new Set(["Event", "Result", "Placement"]);
 
-const normalizeType = (value: unknown): NotificationType => {
+const normalizeType = (value) => {
   const normalized = String(value ?? "").trim();
 
   if (supportedNotificationTypes.has(normalized)) {
-    return normalized as NotificationType;
+    return normalized;
   }
 
   return "Event";
 };
 
-const normalizeNotification = (item: RawNotification): NotificationItem => ({
+const normalizeNotification = (item) => ({
   id: String(item.ID ?? item.Id ?? item.id ?? crypto.randomUUID()),
   type: normalizeType(
     item.Type ?? item.type ?? item.notificationType ?? item.notification_type
@@ -52,8 +22,8 @@ const normalizeNotification = (item: RawNotification): NotificationItem => ({
 });
 
 export const fetchNotifications = async (
-  filters: NotificationFilters
-): Promise<NotificationResponse> => {
+  filters
+) => {
   const params = new URLSearchParams({
     limit: String(filters.limit),
     page: String(filters.page)
@@ -81,7 +51,7 @@ export const fetchNotifications = async (
     throw new Error(detail || `Notification API failed with ${response.status}`);
   }
 
-  const payload = (await response.json()) as RawNotificationResponse;
+  const payload = await response.json();
   const rawNotifications = Array.isArray(payload)
     ? payload
     : payload.notifications ?? [];

@@ -1,10 +1,10 @@
-import { MongoClient, Db } from "mongodb";
+import { MongoClient } from "mongodb";
 import { env } from "./env.js";
 
-let client: MongoClient | null = null;
-let db: Db | null = null;
+let client = null;
+let db = null;
 
-export const connectMongo = async (): Promise<Db> => {
+export const connectMongo = async () => {
   if (db) {
     return db;
   }
@@ -20,7 +20,7 @@ export const connectMongo = async (): Promise<Db> => {
   return db;
 };
 
-export const getMongoDb = (): Db => {
+export const getMongoDb = () => {
   if (!db) {
     throw new Error("MongoDB is not connected. Call connectMongo() first.");
   }
@@ -28,7 +28,7 @@ export const getMongoDb = (): Db => {
   return db;
 };
 
-export const closeMongo = async (): Promise<void> => {
+export const closeMongo = async () => {
   if (client) {
     await client.close();
     client = null;
